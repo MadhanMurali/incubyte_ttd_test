@@ -1,6 +1,6 @@
 import re
 
-from .exceptions import NegativeNumberException
+from .exceptions import NegativeNumberException, WrongFormatException
 
 
 def add(numbers: str) -> int:
@@ -11,6 +11,13 @@ def add(numbers: str) -> int:
     if numbers.startswith("//"):
         delimiter, numbers = numbers.split("\n", 1)
         delimiter = delimiter.lstrip("//")
+
+        if len(delimiter) > 1:
+            if not delimiter.startswith("[") or not delimiter.endswith("]"):
+                raise WrongFormatException(
+                    "Multi-char delimiter should be wrapped inside brackets"
+                )
+            delimiter = delimiter.lstrip("[").rstrip("]")
 
     total = 0
     negative_numbers = ""

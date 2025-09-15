@@ -1,7 +1,7 @@
 import pytest
 
 from .add import add
-from .exceptions import NegativeNumberException
+from .exceptions import NegativeNumberException, WrongFormatException
 
 
 class TestAdd:
@@ -31,7 +31,7 @@ class TestAdd:
         assert add("13\n7,1\n13,7\n1") == 42
         assert add("100,212\n50,1") == 363
 
-    def test_add_delimiter_custom(self) -> None:
+    def test_add_delimiter_custom_single(self) -> None:
         assert add("//;\n1;2\n3") == 6
         assert add("//:\n1\n2:3") == 6
         assert add("//-\n13\n7-1\n13-7\n1") == 42
@@ -50,3 +50,18 @@ class TestAdd:
         assert add("300,5000,70000") == 300
         assert add("13,7,1000") == 1020
         assert add("13,7,1001") == 20
+
+    def test_add_delimiter_custom_multiple(self) -> None:
+        with pytest.raises(WrongFormatException):
+            assert add("//;;;\n1;;;2\n3")
+        with pytest.raises(WrongFormatException):
+            assert add("//::\n1\n2::3")
+        with pytest.raises(WrongFormatException):
+            assert add("//----\n13\n7----1\n13----7\n1")
+        with pytest.raises(WrongFormatException):
+            assert add("//~~~\n100~~~212\n50~~~1")
+
+        assert add("//[;;;]\n1;;;2\n3") == 6
+        assert add("//[::]\n1\n2::3") == 6
+        assert add("//[----]\n13\n7----1\n13----7\n1") == 42
+        assert add("//[~~~]\n100~~~212\n50~~~1") == 363
