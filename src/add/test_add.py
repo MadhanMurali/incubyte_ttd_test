@@ -1,4 +1,7 @@
+import pytest
+
 from .add import add
+from .exceptions import NegativeNumberException
 
 
 class TestAdd:
@@ -33,3 +36,17 @@ class TestAdd:
         assert add("//:\n1\n2:3") == 6
         assert add("//-\n13\n7-1\n13-7\n1") == 42
         assert add("//~\n100~212\n50~1") == 363
+
+    def test_add_raises_negativeexception(self) -> None:
+        with pytest.raises(NegativeNumberException):
+            add("//;\n1;2\n-3")
+        with pytest.raises(NegativeNumberException):
+            add("//:\n-1\n2:3")
+        with pytest.raises(NegativeNumberException):
+            add("//~\n100~-212\n50~1")
+
+    def test_add_biggerthan1000(self) -> None:
+        assert add("1,2,3000") == 3
+        assert add("300,5000,70000") == 300
+        assert add("13,7,1000") == 1020
+        assert add("13,7,1001") == 20
