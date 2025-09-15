@@ -21,3 +21,9 @@ class TestAdd:
         assert add("13,7,1") == 21
         assert add("13,7,1,13,7,1") == 42
         assert add("100,212,50,1") == 363
+
+    def test_add_delimiter_newline(self) -> None:
+        assert add("1,2\n3") == 6
+        assert add("1\n2,3") == 6
+        assert add("13\n7,1\n13,7\n1") == 42
+        assert add("100,212\n50,1") == 363
