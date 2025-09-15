@@ -65,3 +65,8 @@ class TestAdd:
         assert add("//[::]\n1\n2::3") == 6
         assert add("//[----]\n13\n7----1\n13----7\n1") == 42
         assert add("//[~~~]\n100~~~212\n50~~~1") == 363
+
+    def test_add_delimiter_custom_multiplesets(self) -> None:
+        assert add("//[;;;][###]\n1;;;2###3") == 6
+        assert add("//[;;;][###][$$$]\n1;;;2###3$$$17") == 23
+        assert add("//[;;;;;;][#####][$$$]\n1;;;;;;2#####4$$$17") == 24

@@ -7,21 +7,28 @@ def add(numbers: str) -> int:
     if numbers == "":
         return 0
 
-    delimiter = ","
     if numbers.startswith("//"):
-        delimiter, numbers = numbers.split("\n", 1)
-        delimiter = delimiter.lstrip("//")
+        delimiter_sets, numbers = numbers.split("\n", 1)
+        delimiter_sets = delimiter_sets.lstrip("//")
 
-        if len(delimiter) > 1:
-            if not delimiter.startswith("[") or not delimiter.endswith("]"):
+        if len(delimiter_sets) > 1:
+            if not delimiter_sets.startswith("[") or not delimiter_sets.endswith("]"):
                 raise WrongFormatException(
                     "Multi-char delimiter should be wrapped inside brackets"
                 )
-            delimiter = delimiter.lstrip("[").rstrip("]")
+            delimiters = re.findall(r"\[(.*?)\]", delimiter_sets)
+        else:
+            delimiters = [delimiter_sets]
+    else:
+        delimiters = [","]
+
+    delimiter_regex = "\n"
+    for delimiter in delimiters:
+        delimiter_regex += f"|{re.escape(delimiter)}"
 
     total = 0
     negative_numbers = ""
-    for number in re.split(f"\n|{delimiter}", numbers):
+    for number in re.split(delimiter_regex, numbers):
         number_to_add = int(number)
 
         if number_to_add < 0:
